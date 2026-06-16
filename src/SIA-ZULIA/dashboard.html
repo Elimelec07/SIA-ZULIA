@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIA Zulia</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-sm">
+        <img src="img/logo.png" alt="SIA Zulia" class="logo-img-sm">
+      </div>
+      <div class="header-title">
+        <h1>SIA Zulia</h1>
+        <p id="weekLabel">– semanas</p>
+      </div>
+    </div>
+    <div class="header-settings-wrap">
+      <button class="icon-btn" id="menuBtn" onclick="toggleMenu()">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      </button>
+
+      <!-- PANEL DE CONFIGURACIÓN (dentro del header para posición correcta) -->
+      <div id="menuDropdown" class="menu-dropdown settings-panel">
+        <p class="settings-title">⚙️ Configuración</p>
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-icon">🌙</span>
+            <div>
+              <p class="settings-label">Modo oscuro</p>
+              <p class="settings-desc">Cambia el tema de la app</p>
+            </div>
+          </div>
+          <button class="toggle-btn" id="darkModeToggle" onclick="toggleDarkMode()"><span
+              class="toggle-knob"></span></button>
+        </div>
+        <div class="settings-divider"></div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-icon">🔤</span>
+            <div>
+              <p class="settings-label">Texto grande</p>
+              <p class="settings-desc">Aumenta el tamaño de letra</p>
+            </div>
+          </div>
+          <button class="toggle-btn" id="largeFontToggle" onclick="toggleLargeFont()"><span
+              class="toggle-knob"></span></button>
+        </div>
+        <div class="settings-divider"></div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-icon">🔔</span>
+            <div>
+              <p class="settings-label">Recordatorios</p>
+              <p class="settings-desc">Alertas diarias de registro</p>
+            </div>
+          </div>
+          <button class="toggle-btn active" id="notiToggle" onclick="toggleSetting('notiToggle')"><span
+              class="toggle-knob"></span></button>
+        </div>
+        <div class="settings-divider"></div>
+        <button class="menu-item" onclick="openModal('evolucion'); toggleMenu()">📈 Mi evolución</button>
+        <button class="menu-item" onclick="openModal('perfil'); toggleMenu()">👤 Mi perfil</button>
+        <button class="menu-item" onclick="openModal('recordatorios'); toggleMenu()">📚 Educación prenatal</button>
+        <div class="settings-divider"></div>
+        <button class="menu-item menu-item-danger" onclick="logout(); toggleMenu()">🚪 Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== PROGRESS SECTION ===== -->
+  <section class="progress-section">
+    <div class="progress-card">
+      <div class="progress-header">
+        <h2>Progreso de tu embarazo</h2>
+        <span class="badge" id="daysLeft">– días</span>
+      </div>
+      <div class="progress-bar-large">
+        <div class="progress-fill-large" id="progressFill"></div>
+      </div>
+      <p class="progress-text" id="weekRange">Cargando información...</p>
+    </div>
+  </section>
+
+  <!-- ===== CONTENIDO PRINCIPAL ===== -->
+  <main class="main">
+    <div id="seccionHoy">
+
+      <!-- INFO CARDS SECTION -->
+      <div class="grid-4">
+        <div class="card card-featured" onclick="openModal('destacado')">
+          <div class="card-featured-content">
+            <span class="card-days-badge" id="cardDaysLeft">– días</span>
+            <div class="card-mini-progress">
+              <div class="card-mini-fill" id="cardMiniFill"></div>
+            </div>
+          </div>
+          <p class="card-label">Lo destacado</p>
+        </div>
+
+        <div class="card card-size" onclick="openModal('tamano')">
+          <div class="card-fruit-icon" id="cardFruitEmoji">🍌</div>
+          <p class="card-label">Tamaño del bebé</p>
+        </div>
+
+        <div class="card card-baby" onclick="openModal('bebe')">
+          <img src="img/bebe.png" class="card-img-fill" alt="Tu bebé">
+          <p class="card-label">Tu bebé</p>
+        </div>
+
+        <div class="card card-body" onclick="openModal('cuerpo')">
+          <img src="img/emarazada.png" class="card-img-fill" alt="Tu cuerpo">
+          <p class="card-label">Tu cuerpo</p>
+        </div>
+      </div>
+
+      <!-- Carrusel de consejos -->
+      <div class="section-divider"></div>
+      <div id="carouselHome"></div>
+
+      <!-- ALERTAS SECTION -->
+      <div class="section-divider"></div>
+      <h3 class="section-title">Estado de alertas</h3>
+
+      <div class="alerts-container">
+        <div class="alert-item alert-green">
+          <span class="alert-dot"></span>
+          <div>
+            <h4>Sin novedad</h4>
+            <p>Tus registros están dentro de los parámetros normales</p>
+          </div>
+        </div>
+      </div>
+      <!-- ENFERMERA ASIGNADA -->
+      <div class="section-divider"></div>
+      <p class="nurse-section-label">TU ENFERMERA ASIGNADA</p>
+      <div class="nurse-card" onclick="openModal('chat')">
+        <div class="nurse-avatar-circle" id="nurseAvatarCard">ZS</div>
+        <div class="nurse-info">
+          <p class="nurse-name" id="nurseNameCard">Enf. Zuleiny Sierra</p>
+          <p class="nurse-status" id="nurseStatusCard">Turno tarde · <span class="online-dot"></span> En línea</p>
+        </div>
+        <button class="nurse-call-btn" id="nurseCallBtn"
+          onclick="event.stopPropagation(); window.location.href='tel:3233128517'">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.5 9.68 19.79 19.79 0 01.46 1.1 2 2 0 012.43.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-.78a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+          </svg>
+        </button>
+      </div>
+    </div><!-- fin seccionHoy -->
+
+    <!-- SECCIÓN REGISTROS -->
+    <div id="seccionRegistros" style="display:none; padding-top:8px;"></div>
+
+    <!-- SECCIÓN APRENDER -->
+    <div id="seccionAprender" style="display:none; padding-top:8px;"></div>
+
+  </main>
+
+  <!-- ===== MODALS ===== -->
+  <div id="modalOverlay" class="modal-overlay" onclick="closeModal()"></div>
+
+  <!-- Modal: Chat con enfermera -->
+  <div id="modalChat" class="modal modal-chat">
+    <div class="chat-header">
+      <button class="close-btn" onclick="closeModal()" style="color:#fff">✕</button>
+      <div class="chat-nurse-info">
+        <div class="chat-nurse-avatar" id="chatNurseAvatar">ZS</div>
+        <div>
+          <p class="chat-nurse-name" id="chatNurseName">Enf. Zuleiny Sierra</p>
+          <p class="chat-nurse-status"><span class="online-dot"></span>En línea</p>
+        </div>
+      </div>
+      <div style="width:36px"></div>
+    </div>
+
+    <div id="chatMessages" class="chat-messages">
+      <!-- mensajes generados por JS -->
+    </div>
+
+    <div class="chat-quick-replies" id="chatQuickReplies">
+      <button class="quick-reply" onclick="sendQuickReply('¿Cómo van mis registros?')">📊 Mis registros</button>
+      <button class="quick-reply" onclick="sendQuickReply('Tengo dolor de cabeza')">🤕 Dolor de cabeza</button>
+      <button class="quick-reply" onclick="sendQuickReply('¿Cuándo es mi próxima cita?')">📅 Mi próxima cita</button>
+      <button class="quick-reply" onclick="sendQuickReply('Me siento bien hoy')">😊 Me siento bien</button>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" class="chat-input" placeholder="Escribe un mensaje..."
+        onkeydown="if(event.key==='Enter') sendChatMessage()">
+      <button class="chat-send-btn" onclick="sendChatMessage()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Modal: Lo destacado -->
+  <div id="modalDestacado" class="modal">
+    <div class="modal-header">
+      <h2>Lo destacado de esta semana</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content">
+      <div class="info-card">
+        <h3>Cambios en tu cuerpo</h3>
+        <p>En esta semana de embarazo, tu cuerpo continúa preparándose. Es normal experimentar cambios en el tamaño y
+          sensibilidad de los senos.</p>
+      </div>
+      <div class="info-card">
+        <h3>Desarrollo del bebé</h3>
+        <p>Tu bebé está desarrollando gradualmente todos sus órganos y sistemas. Continúa creciendo día a día.</p>
+      </div>
+
+      <div class="info-card info-card-green">
+        <h3>✅ Alimentos recomendados (Dieta DASH)</h3>
+        <p class="food-subtitle">Estos alimentos ayudan a controlar tu presión arterial y reducen el riesgo de
+          preeclampsia hasta un 35–45%.</p>
+        <ul class="food-list">
+          <li><strong>🥦 Verduras y frutas</strong> — 5 a 8 porciones al día: espinaca, brócoli, zanahoria, mango,
+            banano, naranja, papaya.</li>
+          <li><strong>🌾 Cereales integrales</strong> — arroz integral, avena, pan integral, quinoa.</li>
+          <li><strong>🥛 Lácteos bajos en grasa</strong> — leche descremada, yogur bajo en grasa. Fuente clave de calcio
+            (1.200–1.500 mg/día).</li>
+          <li><strong>🍗 Proteínas magras</strong> — pollo sin piel, pescado, legumbres (lentejas, frijoles).</li>
+          <li><strong>🥑 Grasas saludables</strong> — aceite de oliva, aguacate, nueces (con moderación).</li>
+          <li><strong>💧 Hidratación</strong> — mínimo 8 vasos de agua al día (2 litros).</li>
+        </ul>
+      </div>
+
+      <div class="info-card info-card-red">
+        <h3>🚫 Alimentos que debes evitar</h3>
+        <ul class="food-list">
+          <li><strong>Sal</strong> — no más de 2 g de sodio al día. Sin sal adicional en la mesa.</li>
+          <li><strong>Embutidos y carnes procesadas</strong> — salchicha, chorizo, jamón, mortadela.</li>
+          <li><strong>Enlatados y sopas instantáneas</strong> — Maggi, Maruchan; contienen sodio oculto muy alto.</li>
+          <li><strong>Bebidas azucaradas</strong> — gaseosas, jugos industriales.</li>
+          <li><strong>Cafeína</strong> — máximo 200 mg/día (1 taza de café pequeña). El exceso sube la presión.</li>
+          <li><strong>Alcohol</strong> — prohibido durante todo el embarazo.</li>
+          <li><strong>Suplementos de hierbas no prescritos</strong> — uña de gato, guaraná; pueden ser peligrosos.</li>
+        </ul>
+      </div>
+
+      <div class="info-card info-card-purple">
+        <h3>💊 Micronutrientes importantes</h3>
+        <ul class="food-list">
+          <li><strong>Ácido fólico</strong> — hasta la semana 12. Reduce riesgo de defectos del tubo neural.</li>
+          <li><strong>Calcio</strong> — 1.200 mg/día desde la semana 14. Disminuye el riesgo de preeclampsia.</li>
+          <li><strong>Hierro (sulfato ferroso)</strong> — suplementación rutinaria en el embarazo. No necesaria si Hb
+            &gt; 14 g/dL.</li>
+          <li><strong>Vitamina D</strong> — 15 min de sol al día + yema de huevo y pescado graso.</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>📋 Menú ejemplo del día</h3>
+        <ul class="food-list">
+          <li><strong>Desayuno:</strong> avena con leche descremada + fruta fresca + agua.</li>
+          <li><strong>Media mañana:</strong> yogur bajo en grasa + nueces (pequeño puñado).</li>
+          <li><strong>Almuerzo:</strong> arroz integral + legumbres + ensalada de verduras + pollo al horno.</li>
+          <li><strong>Merienda:</strong> fruta fresca + agua.</li>
+          <li><strong>Cena:</strong> sopa de verduras (poca sal) + pan integral + queso blanco.</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>Recomendaciones generales</h3>
+        <ul>
+          <li>Mantén una alimentación balanceada siguiendo la dieta DASH</li>
+          <li>Descansa adecuadamente (7-9 horas)</li>
+          <li>Registra tus signos vitales diariamente</li>
+          <li>Consulta ante cualquier síntoma de alarma</li>
+        </ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" onclick="closeModal()">Entendido</button>
+    </div>
+  </div>
+
+  <!-- Modal: Tamaño del bebé -->
+  <div id="modalTamano" class="modal">
+    <div class="modal-header">
+      <h2>Tamaño del bebé</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content">
+      <div class="size-display">
+        <div class="size-emoji">🥕</div>
+        <h3 id="sizeTitle">Remolacha pequeña</h3>
+        <p id="sizeDesc">Tu bebé mide aproximadamente 5-6 cm</p>
+      </div>
+      <div class="info-card">
+        <h3>Desarrollo sensorial</h3>
+        <p id="sizeDetail">Tu bebé está desarrollando sus sentidos. Ya puede responder a estímulos externos.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Tu bebé -->
+  <div id="modalBebe" class="modal">
+    <div class="modal-header">
+      <h2>Desarrollo de tu bebé</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content">
+      <div class="development-stages">
+        <div class="stage-item">
+          <h3>Corazón</h3>
+          <p>Latiendo fuerte y regular</p>
+        </div>
+        <div class="stage-item">
+          <h3>Cerebro</h3>
+          <p>En desarrollo continuo</p>
+        </div>
+        <div class="stage-item">
+          <h3>Órganos</h3>
+          <p>Formándose progresivamente</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Tu cuerpo -->
+  <div id="modalCuerpo" class="modal">
+    <div class="modal-header">
+      <h2>Cambios en tu cuerpo</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content">
+      <div class="symptoms-list">
+        <div class="symptom-item">
+          <h4>Cansancio</h4>
+          <p>Es normal sentir más fatiga durante el embarazo</p>
+        </div>
+        <div class="symptom-item">
+          <h4>Cambios en senos</h4>
+          <p>Los senos aumentan de tamaño y sensibilidad</p>
+        </div>
+        <div class="symptom-item">
+          <h4>Aumento de peso</h4>
+          <p>Incremento progresivo y saludable</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Registro de signos vitales -->
+  <div id="modalVitales" class="modal">
+    <div class="modal-header">
+      <h2>Registrar signos vitales</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content">
+      <form class="form-vitals">
+        <div class="form-group">
+          <label>Presión Arterial (mmHg)</label>
+          <div class="input-row">
+            <input type="number" id="presionSist" placeholder="150" max="200">
+            <span>/</span>
+            <input type="number" id="presionDias" placeholder="100" max="130">
+          </div>
+          <small>Rango normal: 120/80</small>
+        </div>
+
+        <div class="form-group">
+          <label>Frecuencia Cardíaca (ppm)</label>
+          <input type="number" id="frecuenciaCard" placeholder="80" min="40" max="150">
+          <small>Rango normal: 60-100 ppm</small>
+        </div>
+
+        <div class="form-group">
+          <label>Frecuencia Respiratoria (resp/min)</label>
+          <input type="number" id="frecuenciaResp" placeholder="16" min="10" max="30">
+          <small>Rango normal: 12-20 resp/min</small>
+        </div>
+
+        <div class="form-group">
+          <label>Síntomas presentes</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" id="cb-cefalea"> Cefalea (dolor de cabeza)</label>
+            <label><input type="checkbox" id="cb-vision"> Visión borrosa</label>
+            <label><input type="checkbox" id="cb-epigastral"> Epigastralgia (dolor superior abdomen)</label>
+            <label><input type="checkbox" id="cb-edema"> Edema (hinchazón)</label>
+            <label><input type="checkbox" id="cb-convulsiones"> Convulsiones</label>
+          </div>
+        </div>
+
+        <div id="vitalStatusLive" class="vital-status-live" style="display:none"></div>
+        <button type="button" class="btn-primary" onclick="saveVitals()">Guardar registro</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Perfil -->
+  <div id="modalPerfil" class="modal">
+    <div class="modal-header">
+      <h2>Mi perfil</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content">
+      <!-- Contenido generado por loadProfile() -->
+    </div>
+  </div>
+
+  <!-- Modal: Recordatorios -->
+  <div id="modalRecordatorios" class="modal">
+    <div class="modal-header">
+      <h2>📝 Recordatorios útiles</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content">
+      <div id="recordatoriosContainer" class="recordatorios-list">
+        <!-- Recordatorios se cargan aquí -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Mi evolución -->
+  <div id="modalEvolucion" class="modal">
+    <div class="modal-header" style="flex-direction:column; align-items:flex-start; gap:2px; padding-bottom:14px">
+      <div style="display:flex; justify-content:space-between; width:100%; align-items:center">
+        <h2 style="color:var(--primary-color)">Mi evolución</h2>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-secondary); margin:0">Historial de los últimos 7 días</p>
+    </div>
+    <div class="modal-content" id="evolucionContent"></div>
+  </div>
+
+  <!-- Modal: Lección educativa -->
+  <div id="modalLeccion" class="modal">
+    <div class="modal-header">
+      <h2 id="leccionTitle">Lección</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content" id="leccionContent"></div>
+    <div class="modal-footer">
+      <button class="btn-primary" id="leccionCompleteBtn" onclick="completeCurrentLesson()">✓ Marcar como
+        completado</button>
+    </div>
+  </div>
+
+  <!-- ===== BOTTOM NAV ===== -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('hoy')">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="1" />
+        <path d="M12 2v20M2 12h20" />
+      </svg>
+      <span>Hoy</span>
+    </button>
+
+    <button class="nav-item" onclick="switchTab('registros')">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 11l3 3L22 4M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Registros</span>
+    </button>
+
+    <button class="nav-center" onclick="openModal('chat')">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" stroke-width="2.2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    </button>
+
+    <button class="nav-item" onclick="switchTab('aprender')">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h10z" />
+      </svg>
+      <span>Aprender</span>
+    </button>
+
+    <button class="nav-item" onclick="switchTab('perfil')">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 3a4 4 0 100 8 4 4 0 000-8z" />
+      </svg>
+      <span>Perfil</span>
+    </button>
+  </nav>
+
+  <!-- TOAST NOTIFICACIONES -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore-compat.js"></script>
+
+  <script src="dashboard.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Enfermería — SIA Zulia</title>
+  <link rel="stylesheet" href="enfermeria.css" />
+</head>
+
+<body>
+
+  <!-- ===== LOGIN ===== -->
+  <div id="enLogin" class="en-login-wrap">
+    <div class="en-login-card">
+      <div class="en-login-top">
+        <img src="img/logo.png" alt="SIA Zulia" class="en-logo-img">
+        <span class="en-role-badge">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+          Personal de salud
+        </span>
+      </div>
+      <h2 class="en-login-title">Panel de Enfermería</h2>
+      <p class="en-login-sub">SIA Zulia · Programa HIE</p>
+      <div class="en-divider"><span>Acceso seguro</span></div>
+      <div class="en-input-wrap">
+        <svg class="en-input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0110 0v4" />
+        </svg>
+        <input type="password" id="nurseCode" class="en-input" placeholder="Código de enfermera"
+          onkeydown="if(event.key==='Enter') nurseLogin()">
+      </div>
+      <button class="en-btn" onclick="nurseLogin()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px">
+          <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" />
+        </svg>
+        Ingresar al panel
+      </button>
+      <p class="en-back"><a href="index.html">← Volver al inicio de sesión</a></p>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="enDash" class="hidden">
+
+    <!-- Header -->
+    <header class="en-header">
+      <div class="en-header-left">
+        <img src="img/logo.png" alt="SIA Zulia" class="en-header-logo">
+        <div>
+          <h1 class="en-header-title" id="enHeaderTitle">⚕ Panel de Enfermería</h1>
+          <p class="en-header-sub">Programa HIE · SIA Zulia</p>
+        </div>
+      </div>
+      <div class="en-header-right">
+        <span class="en-shift-badge">Turno: 14:00–22:00</span>
+        <div class="en-nurse-chip">
+          <span class="en-nurse-online"></span>
+          <span id="enHeaderNurseName">Enf. Zuleiny Sierra</span>
+        </div>
+        <button class="en-logout-btn" onclick="nurseLogout()">Salir</button>
+      </div>
+    </header>
+
+    <!-- ===== SECCIÓN: PANEL (pacientes) ===== -->
+    <div id="secPanel">
+      <div class="en-stats-bar">
+        <div class="en-stat">
+          <div class="en-stat-num" id="statTotal">0</div>
+          <div class="en-stat-label">Gestantes activas</div>
+        </div>
+        <div class="en-stat">
+          <div class="en-stat-num en-green" id="statNormal">0</div>
+          <div class="en-stat-label">Sin novedad</div>
+        </div>
+        <div class="en-stat">
+          <div class="en-stat-num en-yellow" id="statVigilancia">0</div>
+          <div class="en-stat-label">En vigilancia</div>
+        </div>
+        <div class="en-stat">
+          <div class="en-stat-num en-red" id="statAlerta">0</div>
+          <div class="en-stat-label">Alerta activa</div>
+        </div>
+      </div>
+      <div class="en-main" id="enPatientList"></div>
+    </div>
+
+    <!-- ===== SECCIÓN: MENSAJES ===== -->
+    <div id="secMensajes" class="hidden">
+      <div class="en-main">
+        <p class="en-section-label">CONVERSACIONES</p>
+        <div id="enChatList"></div>
+      </div>
+    </div>
+
+    <!-- ===== SECCIÓN: AJUSTES ===== -->
+    <div id="secAjustes" class="hidden">
+      <div class="en-main en-settings-wrap">
+
+        <!-- Enfermera de turno -->
+        <div class="en-settings-card">
+          <p class="en-section-label">ENFERMERA DE TURNO</p>
+          <p class="en-section-desc">Los datos que registres aquí aparecerán en el panel de las pacientes como la
+            enfermera disponible para contactar.</p>
+          <div class="en-profile-header">
+            <div class="en-profile-avatar" id="enAvatarCircle">ZS</div>
+            <div>
+              <p class="en-profile-name" id="enProfileName">Enf. Zuleiny Sierra</p>
+              <p class="en-profile-role" id="enProfileRole">Enfermera · Programa HIE</p>
+            </div>
+          </div>
+          <div class="en-form-group">
+            <label>Nombre completo</label>
+            <input type="text" id="settNombre" class="en-setting-input" placeholder="Ej. Enf. María López">
+          </div>
+          <div class="en-form-group">
+            <label>Número de teléfono (visible para pacientes)</label>
+            <input type="tel" id="settTelefono" class="en-setting-input" placeholder="Ej. 3233128517">
+          </div>
+          <div class="en-form-group">
+            <label>Turno actual</label>
+            <select id="settTurno" class="en-setting-input">
+              <option value="Turno mañana · 6:00–14:00">Turno mañana · 6:00–14:00</option>
+              <option value="Turno tarde · 14:00–22:00" selected>Turno tarde · 14:00–22:00</option>
+              <option value="Turno noche · 22:00–6:00">Turno noche · 22:00–6:00</option>
+            </select>
+          </div>
+          <div class="en-form-group">
+            <label>Especialidad / Cargo</label>
+            <input type="text" id="settCargo" class="en-setting-input" placeholder="Ej. Enfermera jefe HIE">
+          </div>
+          <div class="en-form-group">
+            <label>Institución</label>
+            <input type="text" id="settInstitucion" class="en-setting-input" placeholder="Ej. Hospital Universitario">
+          </div>
+          <button class="en-save-btn" onclick="saveNurseProfile()">💾 Guardar y activar turno</button>
+        </div>
+
+        <!-- Seguridad -->
+        <div class="en-settings-card">
+          <p class="en-section-label">SEGURIDAD</p>
+          <div class="en-form-group">
+            <label>Código de acceso actual</label>
+            <input type="password" id="settCodeActual" class="en-setting-input" placeholder="Código actual">
+          </div>
+          <div class="en-form-group">
+            <label>Nuevo código de acceso</label>
+            <input type="password" id="settCodeNuevo" class="en-setting-input"
+              placeholder="Nuevo código (mín. 4 caracteres)">
+          </div>
+          <button class="en-save-btn en-save-secondary" onclick="changeNurseCode()">🔐 Cambiar código</button>
+        </div>
+
+        <!-- Apariencia -->
+        <div class="en-settings-card">
+          <p class="en-section-label">APARIENCIA</p>
+          <div class="en-toggle-row">
+            <div class="en-toggle-info">
+              <span class="en-toggle-icon">🌙</span>
+              <div>
+                <p class="en-toggle-label">Modo oscuro</p>
+                <p class="en-toggle-desc">Cambia el tema del panel</p>
+              </div>
+            </div>
+            <button class="en-toggle-btn" id="enDarkToggle" onclick="toggleEnDark()">
+              <span class="en-toggle-knob"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cerrar sesión -->
+        <button class="en-logout-full" onclick="nurseLogout()">🚪 Cerrar sesión</button>
+
+      </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <nav class="en-bottom-nav">
+      <button class="en-nav-item active" id="navPanel" onclick="switchEnTab('panel')">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span>Panel</span>
+      </button>
+
+      <button class="en-nav-item" id="navMensajes" onclick="switchEnTab('mensajes')">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+        </svg>
+        <span>Mensajes</span>
+        <span class="en-nav-badge hidden" id="navBadge">!</span>
+      </button>
+
+      <button class="en-nav-item" id="navAjustes" onclick="switchEnTab('ajustes')">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+        <span>Ajustes</span>
+      </button>
+    </nav>
+
+  </div><!-- fin enDash -->
+
+  <!-- Modal paciente -->
+  <div id="enModal" class="en-modal-overlay hidden" onclick="closePatientModal()">
+    <div class="en-modal-card" onclick="event.stopPropagation()">
+      <div class="en-modal-header">
+        <div>
+          <h2 id="modalPatientName">--</h2>
+          <p id="modalPatientInfo" class="en-modal-sub">--</p>
+        </div>
+        <button class="en-modal-close" onclick="closePatientModal()">✕</button>
+      </div>
+      <div class="en-modal-body" id="enModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal Chat con paciente -->
+  <div id="enChatModal" class="en-modal-overlay hidden" onclick="closeEnChat()">
+    <div class="en-modal-card en-chat-modal" onclick="event.stopPropagation()">
+      <div class="en-chat-header">
+        <button class="en-modal-close" style="color:#fff" onclick="closeEnChat()">←</button>
+        <div class="en-chat-patient-info">
+          <div class="en-chat-avatar" id="chatPatientAvatar">--</div>
+          <div>
+            <p class="en-chat-patient-name" id="chatPatientName">--</p>
+            <p class="en-chat-patient-status">
+              <span class="en-nurse-online"></span> En línea
+            </p>
+          </div>
+        </div>
+        <div style="width:36px"></div>
+      </div>
+      <div class="en-chat-messages" id="enChatMessages"></div>
+      <div class="en-chat-input-area">
+        <input type="text" id="enChatInput" class="en-chat-input" placeholder="Escribe un mensaje..."
+          onkeydown="if(event.key==='Enter') sendEnMessage()">
+        <button class="en-chat-send" onclick="sendEnMessage()">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="enToast" class="en-toast"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore-compat.js"></script>
+
+  <script src="enfermeria.js"></script>
+</body>
+
+</html>

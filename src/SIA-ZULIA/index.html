@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIA Zulia</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ========== LOGIN ========== -->
+  <div class="card" id="loginCard">
+
+    <div class="logo-wrap">
+      <img src="img/logo.png" alt="SIA Zulia" class="logo-img">
+    </div>
+
+    <div class="field">
+      <select id="loginTipoDoc">
+        <option value="" disabled selected>Tipo de Documento</option>
+        <option value="CC">Cédula de Ciudadanía</option>
+        <option value="TI">Tarjeta de Identidad</option>
+        <option value="CE">Cédula de Extranjería</option>
+        <option value="PA">Pasaporte</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <input type="email" id="loginEmail" placeholder="Correo electrónico" />
+    </div>
+
+    <div class="field">
+      <input type="password" id="loginPassword" placeholder="Contraseña" />
+    </div>
+
+    <div class="link-row">
+      ¿No tienes cuenta? <a href="#" onclick="showRegister()">Regístrate aquí</a>
+    </div>
+
+    <button class="btn" onclick="handleLogin()">Continuar</button>
+
+    <p class="legal">
+      Al hacer clic en continuar, aceptas nuestros
+      <a href="#" onclick="openModal('terminos'); return false;">Términos de servicio</a> y nuestra
+      <a href="#" onclick="openModal('privacidad'); return false;">Política de Privacidad</a>.
+    </p>
+
+    <div class="nurse-access">
+      <a href="enfermeria.html" class="nurse-access-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+        Panel de Enfermería
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ========== REGISTRO ========== -->
+  <div class="card hidden" id="registerCard">
+
+    <div class="reg-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+      Registro
+    </div>
+
+    <div class="field"><input type="text" id="regNombres" placeholder="Nombres" /></div>
+    <div class="field"><input type="text" id="regApellidos" placeholder="Apellidos" /></div>
+    <div class="field"><input type="date" id="regFecha" /></div>
+
+    <div class="field">
+      <select id="regTipoDoc">
+        <option value="" disabled selected>Tipo de Documento</option>
+        <option value="CC">Cédula de Ciudadanía</option>
+        <option value="TI">Tarjeta de Identidad</option>
+        <option value="CE">Cédula de Extranjería</option>
+        <option value="PA">Pasaporte</option>
+      </select>
+    </div>
+
+    <div class="field"><input type="text" id="regNumDoc" placeholder="Número de documento" /></div>
+    <div class="field"><input type="email" id="regEmail" placeholder="Correo electrónico" /></div>
+    <div class="field"><input type="tel" id="regTel" placeholder="Número de teléfono" /></div>
+    <div class="field"><input type="password" id="regPass" placeholder="Contraseña (mínimo 6 caracteres)" /></div>
+    <div class="field"><input type="password" id="regPassConf" placeholder="Confirmar contraseña" /></div>
+
+    <div class="field">
+      <select id="regEPS">
+        <option value="" disabled selected>Seleccione su EPS</option>
+        <option>Colsanitas</option>
+        <option>Compensar</option>
+        <option>Coomeva</option>
+        <option>Coosalud</option>
+        <option>Dusakawi</option>
+        <option>Famisanar</option>
+        <option>Mutualser</option>
+        <option>Nueva EPS</option>
+        <option>Proteger</option>
+        <option>Salud Total</option>
+        <option>Sanitas</option>
+        <option>SOS</option>
+        <option>Sura</option>
+        <option>Otra</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <select id="regRegimen">
+        <option value="" disabled selected>Régimen de Salud</option>
+        <option value="C">Contributivo</option>
+        <option value="S">Subsidiado</option>
+      </select>
+    </div>
+
+    <div class="field"><input type="text" id="regNombreBebe" placeholder="Nombre del bebé (opcional)" /></div>
+
+    <div class="field labeled">
+      <label for="regUltimaMens">Fecha de última menstruación</label>
+      <input type="date" id="regUltimaMens" />
+    </div>
+
+    <div class="field labeled">
+      <label for="regFechaParto">Fecha probable de parto (opcional)</label>
+      <input type="date" id="regFechaParto" />
+    </div>
+
+    <button class="btn" onclick="handleRegister()">Registrar</button>
+
+    <div class="link-row" style="margin-top:16px; margin-bottom:0">
+      ¿Ya tienes cuenta? <a href="#" onclick="showLogin()">Inicia sesión</a>
+    </div>
+
+  </div>
+
+  <!-- ========== MODAL LEGAL ========== -->
+  <div class="modal-overlay hidden" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <button class="btn" onclick="closeModal()">Entendido</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore-compat.js"></script>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
